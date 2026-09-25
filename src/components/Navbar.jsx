@@ -8,10 +8,10 @@ export default function Navbar() {
         {/* Logo */}
         <a href="/" className="flex items-center gap-3">
          <img
-  src="/assets/logo.png"
-  alt="FitLog logo"
-  className="h-10 w-10 object-contain"
- />
+         src="/assets/logo.png"
+         alt="FitLog logo"
+         className="h-10 w-10 object-contain"
+         />
           <span className="text-2xl font-black tracking-tight text-white">
             FITLOG
           </span>
