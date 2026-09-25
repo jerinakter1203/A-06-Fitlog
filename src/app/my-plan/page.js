@@ -71,8 +71,7 @@ export default function MyPlan() {
           </h1>
 
           <p className="text-zinc-400 mt-4 max-w-2xl">
-            Build your workout plan, save exercises for later,
-            and keep track of your training.
+            Cap of five lifts for today. Finish them, then load more.
           </p>
 
         </div>
