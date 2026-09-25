@@ -6,6 +6,7 @@ import Link from "next/link";
 export default function Library() {
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState("default");
 
   useEffect(() => {
     fetch("https://api.abcz.workers.dev/api/fitlog")
@@ -20,6 +21,23 @@ export default function Library() {
       });
   }, []);
 
+  // Sort workouts
+  const sortedWorkouts = [...workouts].sort((a, b) => {
+    if (sortBy === "rating") {
+      return b.rating - a.rating;
+    }
+
+    if (sortBy === "duration") {
+      return a.duration - b.duration;
+    }
+
+    if (sortBy === "calories") {
+      return b.caloriesBurned - a.caloriesBurned;
+    }
+
+    return 0;
+  });
+
   return (
     <section
       id="library"
@@ -27,29 +45,58 @@ export default function Library() {
     >
       <div className="max-w-7xl mx-auto">
 
-        {/* Section Heading */}
-        <div className="mb-10">
-          <p className="text-[#CCFF00] font-bold tracking-widest text-sm mb-3">
-            WORKOUTS
-          </p>
+        {/* Section Heading + Sort */}
+        <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
 
-          <h2 className="text-4xl md:text-5xl font-extrabold uppercase">
-            THE LIBRARY
-          </h2>
+          {/* Heading */}
+          <div>
+            <p className="text-[#CCFF00] font-bold tracking-widest text-sm mb-3">
+              WORKOUTS
+            </p>
 
-          <p className="text-zinc-400 mt-3">
-            Twelve lifts covering every major muscle group.
-          </p>
+            <h2 className="text-4xl md:text-5xl font-extrabold uppercase">
+              THE LIBRARY
+            </h2>
+
+            <p className="text-zinc-400 mt-3">
+              Twelve lifts covering every major muscle group.
+            </p>
+          </div>
+
+          {/* Sort Dropdown */}
+          <div>
+            <label
+              htmlFor="sort"
+              className="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-2"
+            >
+              Sort Workouts
+            </label>
+
+            <select
+              id="sort"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-zinc-900 border border-zinc-700 text-white px-4 py-3 outline-none focus:border-[#CCFF00]"
+            >
+              <option value="default">Default</option>
+              <option value="rating">Highest Rating</option>
+              <option value="duration">Shortest Duration</option>
+              <option value="calories">Highest Calories</option>
+            </select>
+          </div>
+
         </div>
 
         {/* Loading */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-20">
+
             <div className="w-10 h-10 border-4 border-zinc-700 border-t-[#CCFF00] rounded-full animate-spin"></div>
 
             <p className="text-zinc-400 mt-4">
               Loading workouts...
             </p>
+
           </div>
         )}
 
@@ -57,7 +104,7 @@ export default function Library() {
         {!loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            {workouts.map((workout) => (
+            {sortedWorkouts.map((workout) => (
               <Link
                 key={workout.id}
                 href={`/workout/${workout.id}`}
@@ -100,6 +147,7 @@ export default function Library() {
 
                   {/* Stats */}
                   <div className="flex flex-wrap gap-4 mt-5 text-sm text-zinc-300">
+
                     <span>
                       ⏱ {workout.duration} min
                     </span>
@@ -111,6 +159,7 @@ export default function Library() {
                     <span>
                       ★ {workout.rating}
                     </span>
+
                   </div>
 
                 </div>

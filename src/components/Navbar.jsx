@@ -6,7 +6,7 @@ export default function Navbar() {
   const { plan, saved } = useFitLog();
 
   return (
-    <nav className="border-b border-zinc-800 bg-black px-6 py-5">
+    <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-black px-6 py-5">
       <div className="mx-auto flex max-w-7xl items-center justify-between">
 
         {/* Logo */}

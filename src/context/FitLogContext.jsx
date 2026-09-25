@@ -7,12 +7,14 @@ const FitLogContext = createContext();
 export function FitLogProvider({ children }) {
   const [plan, setPlan] = useState([]);
   const [saved, setSaved] = useState([]);
+  const [done, setDone] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
   // Load data from localStorage
   useEffect(() => {
     const savedPlan = localStorage.getItem("fitlog-plan");
     const savedWorkouts = localStorage.getItem("fitlog-saved");
+    const completedWorkouts = localStorage.getItem("fitlog-done");
 
     if (savedPlan) {
       setPlan(JSON.parse(savedPlan));
@@ -22,22 +24,33 @@ export function FitLogProvider({ children }) {
       setSaved(JSON.parse(savedWorkouts));
     }
 
+    if (completedWorkouts) {
+      setDone(JSON.parse(completedWorkouts));
+    }
+
     setLoaded(true);
   }, []);
 
-  // Save plan to localStorage
+  // Save plan
   useEffect(() => {
     if (loaded) {
       localStorage.setItem("fitlog-plan", JSON.stringify(plan));
     }
   }, [plan, loaded]);
 
-  // Save saved workouts to localStorage
+  // Save saved workouts
   useEffect(() => {
     if (loaded) {
       localStorage.setItem("fitlog-saved", JSON.stringify(saved));
     }
   }, [saved, loaded]);
+
+  // Save completed workouts
+  useEffect(() => {
+    if (loaded) {
+      localStorage.setItem("fitlog-done", JSON.stringify(done));
+    }
+  }, [done, loaded]);
 
   // Add workout to plan
   const addToPlan = (workout) => {
@@ -71,15 +84,24 @@ export function FitLogProvider({ children }) {
     setSaved((prev) => prev.filter((item) => item.id !== id));
   };
 
+  // Mark workout as done
+  const markDone = (id) => {
+    if (!done.includes(id)) {
+      setDone((prev) => [...prev, id]);
+    }
+  };
+
   return (
     <FitLogContext.Provider
       value={{
         plan,
         saved,
+        done,
         addToPlan,
         removeFromPlan,
         saveWorkout,
         removeSaved,
+        markDone,
         loaded,
       }}
     >
